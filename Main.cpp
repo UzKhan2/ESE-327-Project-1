@@ -10,7 +10,8 @@ int main()
     string file = "agaricus-lepiota.data";
     ifstream infile(file);
 
-    char arg1, arg2;
+    char arg1 = 'u', arg2;
+    string line;
     vector<pair<char, int>> args;
 
     if (!infile.is_open())
@@ -20,28 +21,45 @@ int main()
     }
     else
     {
-        while (infile >> arg1 >> arg2)
+        while (!infile.eof())
         {
-            bool found = false;
-
-            for (auto &p : args)
+            getline(infile, line);
+            line += '\n';
+            // cout << line << endl;
+            while (line.length() != 0)
             {
-                if (p.first == arg1)
+                arg1 = line[0];
+                line = line.substr(1);
+
+                if (line.length() > 0)
                 {
-                    p.second++;
-                    found = true;
-                    break;
+                    arg2 = line[0];
+                    line = line.substr(1);
                 }
-            }
 
-            if (!found)
-            {
-                args.push_back({arg1, 1});
+                // while (infile >> arg1 >> arg2)
+                // {
+                bool found = false;
+
+                for (auto &p : args)
+                {
+                    if (p.first == arg1)
+                    {
+                        p.second++;
+                        found = true;
+                        break;
+                    }
+                }
+
+                if (!found)
+                {
+                    args.push_back({arg1, 1});
+                }
             }
         }
     }
 
-    // testing
+    // Testing
     for (const auto &p : args)
     {
         cout << "Char: " << p.first << ", Int: " << p.second << endl;
