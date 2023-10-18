@@ -30,6 +30,10 @@ int main()
             {
                 arg1 = line[0];
                 line = line.substr(1);
+                if (arg1 == '\n')
+                {
+                    break;
+                }
 
                 if (line.length() > 0)
                 {
@@ -59,10 +63,29 @@ int main()
         }
     }
 
+    ////Reading into vector and counting
+
+    int n = args.size();
+    for (int i = 1; i < n; i++)
+    {
+        int key = args[i].second;
+        int j = i - 1;
+
+        while (j >= 0 && args[j].second < key)
+        {
+            args[j + 1].second = args[j].second;
+            j = j - 1;
+        }
+
+        args[j + 1].second = key;
+    }
+
+    ////Sorting vector by frequency
+
     // Testing
     for (const auto &p : args)
     {
-        cout << "Char: " << p.first << ", Int: " << p.second << endl;
+        cout << "Char: " << p.first << ", Amount: " << p.second << endl;
     }
 
     return 0;
