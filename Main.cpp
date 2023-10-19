@@ -5,8 +5,109 @@
 
 using namespace std;
 
+class Leaf
+{
+private:
+    std::vector<Leaf *> children;
+
+    friend class TreeList;
+
+public:
+    char elem;
+    int count;
+    Leaf(char e)
+    {
+        elem = e;
+        count = 0;
+    }
+};
+
+class TreeList
+{
+public:
+    TreeList();
+    void addChild(Leaf *parent, char elem);
+    Leaf *checkChild(Leaf *parent, char elem);
+    Leaf *recursiveCheckChild(Leaf *parent, char elem);
+    void printTree(Leaf *node, int depth);
+
+    Leaf *root; // Made root public for easier access
+};
+
+TreeList::TreeList()
+{
+    root = nullptr;
+}
+
+void TreeList::addChild(Leaf *parent, char elem)
+{
+    Leaf *p = new Leaf(elem);
+    parent->children.push_back(p);
+}
+
+Leaf *TreeList::checkChild(Leaf *parent, char elem)
+{
+    for (int i = 0; i < parent->children.size(); i++)
+    {
+        if (parent->children[i]->elem == elem)
+        {
+            parent->children[i]->count++;
+            return parent->children[i];
+        }
+    }
+
+    Leaf *p = new Leaf(elem);
+    parent->children.push_back(p);
+
+    return p;
+}
+
+Leaf *TreeList::recursiveCheckChild(Leaf *parent, char elem)
+{
+    Leaf *result = nullptr;
+
+    for (int i = 0; i < parent->children.size(); i++)
+    {
+        if (parent->children[i]->elem == elem)
+        {
+            parent->children[i]->count++;
+            result = parent->children[i];
+        }
+
+        Leaf *recursiveResult = recursiveCheckChild(parent->children[i], elem);
+
+        if (recursiveResult != nullptr)
+        {
+            result = recursiveResult;
+        }
+    }
+
+    return result;
+}
+
+void TreeList::printTree(Leaf *node, int depth)
+{
+    if (node == nullptr)
+    {
+        cout << "EMpty Tree";
+        return;
+    }
+
+    // Print the node's element and depth
+    cout << string(depth * 2, ' ') << "Element: " << node->elem << ", Count: " << node->count << endl;
+
+    // Recursively print children
+    for (Leaf *child : node->children)
+    {
+        printTree(child, depth + 1);
+    }
+}
+
 int main()
 {
+    TreeList tree;
+    tree.root = new Leaf('U');
+
     string file = "agaricus-lepiota.data";
     ifstream infile(file);
 
@@ -80,13 +181,59 @@ int main()
         args[j + 1].second = key;
     }
 
-    ////Sorting vector by frequency
+    infile.close();
 
-    // Testing
     for (const auto &p : args)
     {
         cout << "Char: " << p.first << ", Amount: " << p.second << endl;
     }
 
-    return 0;
+    ////Sorting vector by frequency
+
+    infile.open(file);
+
+    if (!infile.is_open())
+    {
+        cout << "Error opening file";
+        return 0;
+    }
+    else
+    {
+        while (!infile.eof())
+        {
+            getline(infile, line);
+            line += '\n';
+            while (line.length() != 0)
+            {
+                arg1 = line[0];
+                line = line.substr(1);
+                if (arg1 == '\n')
+                {
+                    break;
+                }
+
+                if (line.length() > 0)
+                {
+                    arg2 = line[0];
+                    line = line.substr(1);
+                }
+
+                Leaf *resultLeaf = tree.recursiveCheckChild(tree.root, arg1);
+
+                while (resultLeaf != nullptr)
+                {
+                    Leaf *resultLeaf = tree.recursiveCheckChild(resultLeaf, arg1);
+                }
+                else
+                {
+                    tree.addChild(tree.root, arg1);
+                }
+            }
+        }
+    }
+
+    infile.close();
+    // Testing
+
+    tree.printTree(tree.root, 0);
 }
