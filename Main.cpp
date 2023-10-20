@@ -79,7 +79,7 @@ Leaf *TreeList::recursiveCheckChild(Leaf *parent, char elem)
     {
         if (parent->children[i]->elem == elem)
         {
-            parent->children[i]->count++;
+            // parent->children[i]->count++;
             result = parent->children[i];
             found = true;
         }
@@ -101,7 +101,7 @@ Leaf *TreeList::recursiveCheckChild(Leaf *parent, char elem)
 
 void TreeList::printTree(Leaf *node, int depth)
 {
-    cout << "bob";
+
     if (node == nullptr)
     {
         cout << "EMpty Tree";
@@ -216,7 +216,25 @@ int main()
     {
         while (!infile.eof())
         {
+
+            getline(infile, line);
+            line += '\n';
+
             Leaf *current = tree.root;
+
+            arg1 = line[0];
+            line = line.substr(1);
+
+            if (line.length() > 0)
+            {
+                arg2 = line[0];
+                line = line.substr(1);
+            }
+
+            if (!tree.checkChild(current, arg1))
+            {
+                tree.addChild(current, arg1);
+            }
 
             while (line.length() != 0)
             {
@@ -233,15 +251,20 @@ int main()
                     line = line.substr(1);
                 }
 
-                while (tree.checkChild(current, arg1))
+                if (!tree.checkChild(current, arg1))
                 {
-                    Leaf *resultLeaf = tree.recursiveCheckChild(tree.root, arg1);
-                    if (!tree.checkChild(current, arg1))
-                    {
-                        tree.addChild(current, arg1);
-                        break;
-                    }
+                    tree.addChild(current, arg1);
                 }
+
+                // while (tree.checkChild(current, arg1))
+                // {
+                //     Leaf *resultLeaf = tree.recursiveCheckChild(tree.root, arg1);
+                //     if (!tree.checkChild(current, arg1))
+                //     {
+                //         tree.addChild(current, arg1);
+                //         break;
+                //     }
+                // }
             }
         }
     }
