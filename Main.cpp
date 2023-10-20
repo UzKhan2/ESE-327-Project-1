@@ -27,7 +27,7 @@ class TreeList
 public:
     TreeList();
     void addChild(Leaf *parent, char elem);
-    Leaf *checkChild(Leaf *parent, char elem);
+    bool checkChild(Leaf *parent, char elem);
     Leaf *recursiveCheckChild(Leaf *parent, char elem);
     void printTree(Leaf *node, int depth);
 
@@ -45,26 +45,10 @@ void TreeList::addChild(Leaf *parent, char elem)
     parent->children.push_back(p);
 }
 
-Leaf *TreeList::checkChild(Leaf *parent, char elem)
-{
-    for (int i = 0; i < parent->children.size(); i++)
-    {
-        if (parent->children[i]->elem == elem)
-        {
-            parent->children[i]->count++;
-            return parent->children[i];
-        }
-    }
-
-    Leaf *p = new Leaf(elem);
-    parent->children.push_back(p);
-
-    return p;
-}
-
-Leaf *TreeList::recursiveCheckChild(Leaf *parent, char elem)
+bool TreeList::checkChild(Leaf *parent, char elem)
 {
     Leaf *result = nullptr;
+    bool found = false;
 
     for (int i = 0; i < parent->children.size(); i++)
     {
@@ -72,14 +56,44 @@ Leaf *TreeList::recursiveCheckChild(Leaf *parent, char elem)
         {
             parent->children[i]->count++;
             result = parent->children[i];
+            found = true;
         }
 
-        Leaf *recursiveResult = recursiveCheckChild(parent->children[i], elem);
+        // Leaf *recursiveResult = recursiveCheckChild(parent->children[i], elem);
 
-        if (recursiveResult != nullptr)
+        // if (recursiveResult != nullptr)
+        // {
+        //     result = recursiveResult;
+        // }
+    }
+
+    return found;
+}
+
+Leaf *TreeList::recursiveCheckChild(Leaf *parent, char elem)
+{
+    Leaf *result = nullptr;
+    bool found = false;
+
+    for (int i = 0; i < parent->children.size(); i++)
+    {
+        if (parent->children[i]->elem == elem)
         {
-            result = recursiveResult;
+            parent->children[i]->count++;
+            result = parent->children[i];
+            found = true;
         }
+
+        // Leaf *recursiveResult = recursiveCheckChild(parent->children[i], elem);
+
+        // if (recursiveResult != nullptr)
+        // {
+        //     result = recursiveResult;
+        // }
+    }
+    if (!found)
+    {
+        result = parent;
     }
 
     return result;
@@ -87,6 +101,7 @@ Leaf *TreeList::recursiveCheckChild(Leaf *parent, char elem)
 
 void TreeList::printTree(Leaf *node, int depth)
 {
+    cout << "bob";
     if (node == nullptr)
     {
         cout << "EMpty Tree";
@@ -201,8 +216,8 @@ int main()
     {
         while (!infile.eof())
         {
-            getline(infile, line);
-            line += '\n';
+            Leaf *current = tree.root;
+
             while (line.length() != 0)
             {
                 arg1 = line[0];
@@ -218,15 +233,14 @@ int main()
                     line = line.substr(1);
                 }
 
-                Leaf *resultLeaf = tree.recursiveCheckChild(tree.root, arg1);
-
-                while (resultLeaf != nullptr)
+                while (tree.checkChild(current, arg1))
                 {
-                    Leaf *resultLeaf = tree.recursiveCheckChild(resultLeaf, arg1);
-                }
-                else
-                {
-                    tree.addChild(tree.root, arg1);
+                    Leaf *resultLeaf = tree.recursiveCheckChild(tree.root, arg1);
+                    if (!tree.checkChild(current, arg1))
+                    {
+                        tree.addChild(current, arg1);
+                        break;
+                    }
                 }
             }
         }
@@ -236,4 +250,5 @@ int main()
     // Testing
 
     tree.printTree(tree.root, 0);
+    return 0;
 }
