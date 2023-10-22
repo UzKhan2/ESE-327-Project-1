@@ -104,7 +104,7 @@ void TreeList::printTree(Leaf *node, int depth)
 
     if (node == nullptr)
     {
-        cout << "EMpty Tree";
+        cout << "Empty Tree";
         return;
     }
 
