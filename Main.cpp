@@ -47,7 +47,7 @@ void TreeList::addChild(Leaf *parent, char elem)
 
 bool TreeList::checkChild(Leaf *parent, char elem)
 {
-    Leaf *result = nullptr;
+    // Leaf *result = nullptr;
     bool found = false;
 
     for (int i = 0; i < parent->children.size(); i++)
@@ -55,16 +55,9 @@ bool TreeList::checkChild(Leaf *parent, char elem)
         if (parent->children[i]->elem == elem)
         {
             parent->children[i]->count++;
-            result = parent->children[i];
+            // result = parent->children[i];
             found = true;
         }
-
-        // Leaf *recursiveResult = recursiveCheckChild(parent->children[i], elem);
-
-        // if (recursiveResult != nullptr)
-        // {
-        //     result = recursiveResult;
-        // }
     }
 
     return found;
@@ -204,6 +197,38 @@ int main()
     }
 
     ////Sorting vector by frequency
+    string file2 = "out.data";
+    ofstream oufile(file2);
+
+    infile.open(file);
+    oufile.open(file2);
+    vector<char> arg2;
+    int count = 0;
+
+    for (int i = 0; i > args.size; i++)
+    {
+        arg2[i] = args[i].first;
+    }
+
+    if (!infile.is_open())
+    {
+        cout << "Error opening file";
+        return 0;
+    }
+    else
+    {
+        while (!infile.eof())
+        {
+            getline(infile, line);
+            line += '\n';
+
+            for (line.)
+            {
+            }
+        }
+    }
+
+    infile.close();
 
     infile.open(file);
 
@@ -249,12 +274,18 @@ int main()
                 {
                     arg2 = line[0];
                     line = line.substr(1);
+                    // if (arg2 == '\n')
+                    // {
+                    //     break;
+                    // }
                 }
 
                 if (!tree.checkChild(current, arg1))
                 {
                     tree.addChild(current, arg1);
                 }
+
+                current = tree.recursiveCheckChild(current, arg1);
 
                 // while (tree.checkChild(current, arg1))
                 // {
@@ -272,6 +303,7 @@ int main()
     infile.close();
     // Testing
 
-    tree.printTree(tree.root, 0);
+    // cout << "Printing Tree" << endl;
+    // tree.printTree(tree.root, 0);
     return 0;
 }
