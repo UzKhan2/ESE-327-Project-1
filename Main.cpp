@@ -47,7 +47,6 @@ void TreeList::addChild(Leaf *parent, char elem)
 
 bool TreeList::checkChild(Leaf *parent, char elem)
 {
-    // Leaf *result = nullptr;
     bool found = false;
 
     for (int i = 0; i < parent->children.size(); i++)
@@ -55,7 +54,6 @@ bool TreeList::checkChild(Leaf *parent, char elem)
         if (parent->children[i]->elem == elem)
         {
             parent->children[i]->count++;
-            // result = parent->children[i];
             found = true;
         }
     }
@@ -72,17 +70,9 @@ Leaf *TreeList::recursiveCheckChild(Leaf *parent, char elem)
     {
         if (parent->children[i]->elem == elem)
         {
-            // parent->children[i]->count++;
             result = parent->children[i];
             found = true;
         }
-
-        // Leaf *recursiveResult = recursiveCheckChild(parent->children[i], elem);
-
-        // if (recursiveResult != nullptr)
-        // {
-        //     result = recursiveResult;
-        // }
     }
     if (!found)
     {
@@ -94,17 +84,14 @@ Leaf *TreeList::recursiveCheckChild(Leaf *parent, char elem)
 
 void TreeList::printTree(Leaf *node, int depth)
 {
-
     if (node == nullptr)
     {
         cout << "Empty Tree";
         return;
     }
 
-    // Print the node's element and depth
     cout << string(depth * 2, ' ') << "Element: " << node->elem << ", Count: " << node->count << endl;
 
-    // Recursively print children
     for (Leaf *child : node->children)
     {
         printTree(child, depth + 1);
@@ -130,11 +117,10 @@ int main()
     }
     else
     {
-        while (!infile.eof())
+        while (getline(infile, line))
         {
-            getline(infile, line);
             line += '\n';
-            // cout << line << endl;
+
             while (line.length() != 0)
             {
                 arg1 = line[0];
@@ -150,8 +136,6 @@ int main()
                     line = line.substr(1);
                 }
 
-                // while (infile >> arg1 >> arg2)
-                // {
                 bool found = false;
 
                 for (auto &p : args)
@@ -171,8 +155,6 @@ int main()
             }
         }
     }
-
-    ////Reading into vector and counting
 
     int n = args.size();
     for (int i = 1; i < n; i++)
@@ -196,19 +178,16 @@ int main()
         cout << "Char: " << p.first << ", Amount: " << p.second << endl;
     }
 
-    ////Sorting vector by frequency
     string file2 = "out.data";
     ofstream oufile(file2);
 
-    infile.open(file);
-    oufile.open(file2);
-    vector<char> arg2;
-    int count = 0;
-
-    for (int i = 0; i > args.size; i++)
+    if (!oufile.is_open())
     {
-        arg2[i] = args[i].first;
+        cout << "Error opening file";
+        return 0;
     }
+
+    infile.open(file);
 
     if (!infile.is_open())
     {
@@ -217,18 +196,25 @@ int main()
     }
     else
     {
-        while (!infile.eof())
+        while (getline(infile, line))
         {
-            getline(infile, line);
             line += '\n';
 
-            for (line.)
+            for (int i = 0; i < args.size(); i++)
             {
+                for (int j = 0; j < line.length(); j++)
+                {
+                    if (args[i].first == line[j])
+                    {
+                        oufile << args[i].first << ",";
+                    }
+                }
             }
         }
     }
 
     infile.close();
+    oufile.close();
 
     infile.open(file);
 
@@ -239,10 +225,8 @@ int main()
     }
     else
     {
-        while (!infile.eof())
+        while (getline(infile, line))
         {
-
-            getline(infile, line);
             line += '\n';
 
             Leaf *current = tree.root;
@@ -274,10 +258,6 @@ int main()
                 {
                     arg2 = line[0];
                     line = line.substr(1);
-                    // if (arg2 == '\n')
-                    // {
-                    //     break;
-                    // }
                 }
 
                 if (!tree.checkChild(current, arg1))
@@ -286,24 +266,14 @@ int main()
                 }
 
                 current = tree.recursiveCheckChild(current, arg1);
-
-                // while (tree.checkChild(current, arg1))
-                // {
-                //     Leaf *resultLeaf = tree.recursiveCheckChild(tree.root, arg1);
-                //     if (!tree.checkChild(current, arg1))
-                //     {
-                //         tree.addChild(current, arg1);
-                //         break;
-                //     }
-                // }
             }
         }
     }
 
     infile.close();
-    // Testing
 
-    // cout << "Printing Tree" << endl;
-    // tree.printTree(tree.root, 0);
+    cout << "Printing Tree" << endl;
+    tree.printTree(tree.root, 0);
+
     return 0;
 }
