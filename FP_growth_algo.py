@@ -80,7 +80,7 @@ def update_tree(node, transaction):
 
         else:
             for i, child in enumerate(node.children):
-                print("Child data: ", child.data)
+                #print("Child data: ", child.data)
                 if transaction[0] == child.data:
                     child.inc_count()
                     transaction.pop(0)
