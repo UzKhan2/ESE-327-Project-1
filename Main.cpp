@@ -226,17 +226,18 @@ int main()
 
     infile.close();
     oufile.close();
+    ifstream infile2(file2);
 
-    oufile.open(file2);
+    // infile2.open(file2);
 
-    if (!oufile.is_open())
+    if (!infile2.is_open())
     {
         cout << "Error opening file";
         return 0;
     }
     else
     {
-        while (getline(infile, line))
+        while (getline(infile2, line))
         {
             line += '\n';
 
@@ -281,7 +282,7 @@ int main()
         }
     }
 
-    oufile.close();
+    infile2.close();
 
     cout << "Printing Tree" << endl;
     tree.printTree(tree.root, 0);
