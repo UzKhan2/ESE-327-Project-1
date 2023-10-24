@@ -24,6 +24,7 @@ Scan the dataset to count the support (frequency of occurrence) of each item.
 <br /> 2) Sort Items by Support:
 
 Sort the items in descending order of support. This helps in building the FP-tree efficiently.
+
 <br /> 3) Build the FP-Tree:
 
 Start with an empty FP-tree. For each transaction in the dataset: Sort the items in the transaction according to their support. Add the sorted transaction to the FP-tree. If a path with the same items already exists in the tree, increment the count of the existing path.
