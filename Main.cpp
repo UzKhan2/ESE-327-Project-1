@@ -180,6 +180,7 @@ int main()
 
     string file2 = "out.data";
     ofstream oufile(file2);
+    int count = 0;
 
     if (!oufile.is_open())
     {
@@ -206,19 +207,29 @@ int main()
                 {
                     if (args[i].first == line[j])
                     {
-                        oufile << args[i].first << ",";
+                        oufile << args[i].first;
+
+                        if (count != ((line.length() / 2) - 1))
+                        {
+                            count++;
+
+                            oufile << ",";
+                        }
+                        // cout << count << " " << line.length() << " ";
                     }
                 }
             }
+            count = 0;
+            oufile << endl;
         }
     }
 
     infile.close();
     oufile.close();
 
-    infile.open(file);
+    oufile.open(file2);
 
-    if (!infile.is_open())
+    if (!oufile.is_open())
     {
         cout << "Error opening file";
         return 0;
@@ -270,7 +281,7 @@ int main()
         }
     }
 
-    infile.close();
+    oufile.close();
 
     cout << "Printing Tree" << endl;
     tree.printTree(tree.root, 0);
