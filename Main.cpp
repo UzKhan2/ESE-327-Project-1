@@ -2,36 +2,36 @@
 #include <fstream>
 #include <vector>
 #include <string>
+#include <queue>
 
 using namespace std;
 
-class Leaf
+class Leaf // Tree node to hold each argument
 {
 private:
-    std::vector<Leaf *> children;
-
     friend class TreeList;
+    char elem; // Specific argument transaction value
+    int count; // Count for how many times the Leaf comes up in the tree
 
 public:
-    char elem;
-    int count;
-    Leaf(char e)
+    std::vector<Leaf *> children; // Vector to hold up to n number of children
+
+    Leaf(char e) // Allows for a public access to private data for TreeList class
     {
         elem = e;
         count = 0;
     }
 };
 
-class TreeList
+class TreeList // Linked List class for the tree
 {
 public:
-    TreeList();
-    void addChild(Leaf *parent, char elem);
-    bool checkChild(Leaf *parent, char elem);
-    Leaf *recursiveCheckChild(Leaf *parent, char elem);
-    void printTree(Leaf *node, int depth);
-
-    Leaf *root; // Made root public for easier access
+    TreeList();                                    // Constructor, creates root with null pointer
+    void addChild(Leaf *parent, char elem);        // Add new child with arguement to given parent, doesn't move from parent
+    bool checkChild(Leaf *parent, char elem);      // Chekcks if the parent has a child with given argument returns true if yes, incremeants
+    Leaf *recursiveMover(Leaf *parent, char elem); // Looks for child of parent that has the same arguemnt and moves there, else returns parent
+    void printTree(Leaf *node, int depth);         // Prints out tree to output withsome fromatting
+    Leaf *root;                                    // Makes root public
 };
 
 TreeList::TreeList()
@@ -41,44 +41,42 @@ TreeList::TreeList()
 
 void TreeList::addChild(Leaf *parent, char elem)
 {
-    Leaf *p = new Leaf(elem);
-    parent->children.push_back(p);
+    Leaf *p = new Leaf(elem);      // Create a new leaf with inputed arguement
+    parent->children.push_back(p); // push into vector of childern
 }
 
 bool TreeList::checkChild(Leaf *parent, char elem)
 {
-    bool found = false;
+    bool found = false; // Bool to check if child is found
 
     for (int i = 0; i < parent->children.size(); i++)
     {
-        if (parent->children[i]->elem == elem)
+        if (parent->children[i]->elem == elem) // Check if child and argument is found
         {
-            parent->children[i]->count++;
+            parent->children[i]->count++; // Increaments number number of times transaction occured
             found = true;
         }
     }
-
     return found;
 }
 
-Leaf *TreeList::recursiveCheckChild(Leaf *parent, char elem)
+Leaf *TreeList::recursiveMover(Leaf *parent, char elem)
 {
-    Leaf *result = nullptr;
-    bool found = false;
+    Leaf *result = nullptr; // Dummy leaf to copy location over
+    bool found = false;     // Bool to check if chils is found
 
     for (int i = 0; i < parent->children.size(); i++)
     {
-        if (parent->children[i]->elem == elem)
+        if (parent->children[i]->elem == elem) // Check if child and arguemnt is found
         {
-            result = parent->children[i];
-            found = true;
+            result = parent->children[i]; // Copies over the location of child into result
+            found = true;                 // Found flag is set
         }
     }
-    if (!found)
+    if (!found) // If child wasn't found return parent instead
     {
         result = parent;
     }
-
     return result;
 }
 
@@ -98,9 +96,73 @@ void TreeList::printTree(Leaf *node, int depth)
     }
 }
 
+class StringNode
+{
+private:
+    Leaf *leaf;
+    StringNode *next;
+
+    friend class StringLinkedList;
+};
+
+class StringLinkedList
+{
+public:
+    StringLinkedList();             // constructor
+    ~StringLinkedList();            // destructor
+    void addFront(const string &e); // adds new element on the front
+    void removeFront();             // removes front element
+    bool empty() const;             // true of list is empty
+private:
+    StringNode *head;
+};
+
+StringLinkedList ::StringLinkedList()
+{
+
+    head = NULL;
+}
+
+bool StringLinkedList ::empty() const
+{
+    return (head == NULL);
+}
+
+StringLinkedList ::~StringLinkedList()
+{
+
+    while (!empty())
+        removeFront();
+}
+
+void StringLinkedList ::addFront(const string &e)
+{
+    StringNode *p;
+
+    p = new StringNode;
+    // p->elem = e;
+
+    p->next = head;
+    head = p;
+}
+
+void StringLinkedList ::removeFront()
+{
+    StringNode *p;
+
+    if (head != NULL)
+    {
+        p = head;
+        head = p->next;
+        delete p;
+    }
+    else
+        cout << "Warning: attempt to remove from an empty list" << endl;
+}
+
 int main()
 {
-    TreeList tree;
+    TreeList tree; // Initialize tree
     tree.root = new Leaf('U');
 
     string file = "agaricus-lepiota.data";
@@ -277,7 +339,7 @@ int main()
                     tree.addChild(current, arg1);
                 }
 
-                current = tree.recursiveCheckChild(current, arg1);
+                current = tree.recursiveMover(current, arg1);
             }
         }
     }
@@ -286,6 +348,39 @@ int main()
 
     cout << "Printing Tree" << endl;
     tree.printTree(tree.root, 0);
+
+    // vector<StringLinkedList> Header;
+
+    for (int i = 0; i < args.size(); i++)
+    {
+        // StringLinkedList args[i];
+    }
+
+    cout << "Breadth-First Search:" << endl;
+
+    // Initialize a queue for BFS
+    queue<Leaf *> bfsQueue;
+
+    // Start with the root node
+    bfsQueue.push(tree.root);
+
+    while (!bfsQueue.empty())
+    {
+        Leaf *current = bfsQueue.front();
+        bfsQueue.pop();
+
+        // Process the current node
+        // cout << "Element: " << current->elem << ", Count: " << current->count << endl;
+
+        // Add all children to the queue
+        for (Leaf *child : current->children)
+        {
+            bfsQueue.push(child);
+        }
+    }
+
+    // Fill in header vector go through array with all arguements
+    // connect them to all instances of same thing wiht pointers breath frist search?
 
     return 0;
 }
