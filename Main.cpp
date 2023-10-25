@@ -12,9 +12,10 @@ private:
     friend class TreeList;
 
 public:
-    std::vector<Leaf *> children; // Vector to hold up to n number of children
-    char elem;                    // Specific argument transaction value
-    int count;                    // Count for how many times the Leaf comes up in the tree
+    vector<Leaf *> children; // Vector to hold up to n number of children
+    char elem;               // Specific argument transaction value
+    int count;               // Count for how many times the Leaf comes up in the tree
+    Leaf *parent;            // Pointer to the parent node
 
     Leaf(char e) // Allows for a public access to private data for TreeList class
     {
@@ -41,7 +42,8 @@ TreeList::TreeList()
 
 void TreeList::addChild(Leaf *parent, char elem)
 {
-    Leaf *p = new Leaf(elem);      // Create a new leaf with inputted argument
+    Leaf *p = new Leaf(elem); // Create a new leaf with inputted argument
+    p->parent = parent;
     parent->children.push_back(p); // push into vector of children
 }
 
@@ -111,8 +113,9 @@ public:
     StringLinkedList();          // constructor
     StringLinkedList(char e);    // Constructor that accepts a char argument
     ~StringLinkedList();         // destructor
-    void addFront(Leaf *parnet); // adds new element on the front
+    void addFront(Leaf *parent); // adds new element on the front
     void removeFront();          // removes front element
+    const string &front() const; // returns front element
     bool empty() const;          // true of list is empty
 private:
     StringNode *head;
@@ -140,15 +143,28 @@ StringLinkedList ::~StringLinkedList()
         removeFront();
 }
 
-void StringLinkedList ::addFront(Leaf *parnet)
+void StringLinkedList ::addFront(Leaf *parent)
 {
     StringNode *p;
 
     p = new StringNode;
-    p->leaf = parnet;
+    p->leaf = parent;
 
     p->next = head;
     head = p;
+}
+
+const string &StringLinkedList ::front() const
+{
+
+    if (head != NULL)
+    {
+        // return head->leaf;
+    }
+    else
+    {
+        cout << "Warning: the list is empty" << endl;
+    }
 }
 
 void StringLinkedList ::removeFront()
@@ -386,6 +402,11 @@ int main()
         {
             bfsQueue.push(child);
         }
+    }
+
+    for (int i = 0; i < args.size(); i++)
+    {
+        // Header[i].front;
     }
 
     // cout << "Breadth-First Search:" << endl;
