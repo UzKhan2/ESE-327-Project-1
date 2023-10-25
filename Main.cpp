@@ -10,16 +10,16 @@ class Leaf // Tree node to hold each argument
 {
 private:
     friend class TreeList;
-    char elem; // Specific argument transaction value
-    int count; // Count for how many times the Leaf comes up in the tree
 
 public:
     std::vector<Leaf *> children; // Vector to hold up to n number of children
+    char elem;                    // Specific argument transaction value
+    int count;                    // Count for how many times the Leaf comes up in the tree
 
     Leaf(char e) // Allows for a public access to private data for TreeList class
     {
         elem = e;
-        count = 0;
+        count = 1;
     }
 };
 
@@ -27,10 +27,10 @@ class TreeList // Linked List class for the tree
 {
 public:
     TreeList();                                    // Constructor, creates root with null pointer
-    void addChild(Leaf *parent, char elem);        // Add new child with arguement to given parent, doesn't move from parent
-    bool checkChild(Leaf *parent, char elem);      // Chekcks if the parent has a child with given argument returns true if yes, incremeants
-    Leaf *recursiveMover(Leaf *parent, char elem); // Looks for child of parent that has the same arguemnt and moves there, else returns parent
-    void printTree(Leaf *node, int depth);         // Prints out tree to output withsome fromatting
+    void addChild(Leaf *parent, char elem);        // Add new child with argument to given parent, doesn't move from parent
+    bool checkChild(Leaf *parent, char elem);      // Checks if the parent has a child with given argument returns true if yes, increments
+    Leaf *recursiveMover(Leaf *parent, char elem); // Looks for child of parent that has the same argument and moves there, else returns parent
+    void printTree(Leaf *node, int depth);         // Prints out tree to output with some formatting
     Leaf *root;                                    // Makes root public
 };
 
@@ -41,8 +41,8 @@ TreeList::TreeList()
 
 void TreeList::addChild(Leaf *parent, char elem)
 {
-    Leaf *p = new Leaf(elem);      // Create a new leaf with inputed arguement
-    parent->children.push_back(p); // push into vector of childern
+    Leaf *p = new Leaf(elem);      // Create a new leaf with inputted argument
+    parent->children.push_back(p); // push into vector of children
 }
 
 bool TreeList::checkChild(Leaf *parent, char elem)
@@ -53,7 +53,7 @@ bool TreeList::checkChild(Leaf *parent, char elem)
     {
         if (parent->children[i]->elem == elem) // Check if child and argument is found
         {
-            parent->children[i]->count++; // Increaments number number of times transaction occured
+            parent->children[i]->count++; // Increments number number of times transaction occurred
             found = true;
         }
     }
@@ -63,11 +63,11 @@ bool TreeList::checkChild(Leaf *parent, char elem)
 Leaf *TreeList::recursiveMover(Leaf *parent, char elem)
 {
     Leaf *result = nullptr; // Dummy leaf to copy location over
-    bool found = false;     // Bool to check if chils is found
+    bool found = false;     // Bool to check if children is found
 
     for (int i = 0; i < parent->children.size(); i++)
     {
-        if (parent->children[i]->elem == elem) // Check if child and arguemnt is found
+        if (parent->children[i]->elem == elem) // Check if child and argument is found
         {
             result = parent->children[i]; // Copies over the location of child into result
             found = true;                 // Found flag is set
@@ -108,18 +108,23 @@ private:
 class StringLinkedList
 {
 public:
-    StringLinkedList();             // constructor
-    ~StringLinkedList();            // destructor
-    void addFront(const string &e); // adds new element on the front
-    void removeFront();             // removes front element
-    bool empty() const;             // true of list is empty
+    StringLinkedList();          // constructor
+    StringLinkedList(char e);    // Constructor that accepts a char argument
+    ~StringLinkedList();         // destructor
+    void addFront(Leaf *parnet); // adds new element on the front
+    void removeFront();          // removes front element
+    bool empty() const;          // true of list is empty
 private:
     StringNode *head;
 };
 
 StringLinkedList ::StringLinkedList()
 {
+    head = NULL;
+}
 
+StringLinkedList ::StringLinkedList(char e)
+{
     head = NULL;
 }
 
@@ -135,12 +140,12 @@ StringLinkedList ::~StringLinkedList()
         removeFront();
 }
 
-void StringLinkedList ::addFront(const string &e)
+void StringLinkedList ::addFront(Leaf *parnet)
 {
     StringNode *p;
 
     p = new StringNode;
-    // p->elem = e;
+    p->leaf = parnet;
 
     p->next = head;
     head = p;
@@ -162,8 +167,8 @@ void StringLinkedList ::removeFront()
 
 int main()
 {
-    TreeList tree; // Initialize tree
-    tree.root = new Leaf('U');
+    TreeList tree;             // Initialize tree
+    tree.root = new Leaf('U'); // Set up root value
 
     string file = "agaricus-lepiota.data";
     ifstream infile(file);
@@ -347,21 +352,18 @@ int main()
     infile2.close();
 
     cout << "Printing Tree" << endl;
-    tree.printTree(tree.root, 0);
+    // tree.printTree(tree.root, 0);
 
-    // vector<StringLinkedList> Header;
+    vector<StringLinkedList> Header;
 
+    // Initialize the Header vector with StringLinkedList objects
     for (int i = 0; i < args.size(); i++)
     {
-        // StringLinkedList args[i];
+        Header.push_back(StringLinkedList(args[i].first));
     }
-
-    cout << "Breadth-First Search:" << endl;
 
     // Initialize a queue for BFS
     queue<Leaf *> bfsQueue;
-
-    // Start with the root node
     bfsQueue.push(tree.root);
 
     while (!bfsQueue.empty())
@@ -369,8 +371,15 @@ int main()
         Leaf *current = bfsQueue.front();
         bfsQueue.pop();
 
-        // Process the current node
-        // cout << "Element: " << current->elem << ", Count: " << current->count << endl;
+        for (int i = 0; i < args.size(); i++)
+        {
+            if (current->elem == args[i].first)
+            {
+                // Add the current Leaf to the corresponding StringLinkedList
+                Header[i].addFront(current);
+                // cout << args[i].first << " ";
+            }
+        }
 
         // Add all children to the queue
         for (Leaf *child : current->children)
@@ -379,8 +388,16 @@ int main()
         }
     }
 
-    // Fill in header vector go through array with all arguements
-    // connect them to all instances of same thing wiht pointers breath frist search?
+    // cout << "Breadth-First Search:" << endl;
+
+    // Iterate through the Header vector
+
+    // Initialize a queue for BFS
+
+    // Start with the root node
+
+    // Fill in header vector go through array with all arguments
+    // connect them to all instances of same thing with pointers breath first search?
 
     return 0;
 }
