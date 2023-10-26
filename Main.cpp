@@ -12,10 +12,10 @@ private:
     friend class TreeList;
 
 public:
-    vector<Leaf *> children; // Vector to hold up to n number of children
+    vector<Leaf*> children; // Vector to hold up to n number of children
     char elem;               // Specific argument transaction value
     int count;               // Count for how many times the Leaf comes up in the tree
-    Leaf *parent;            // Pointer to the parent node
+    Leaf* parent;            // Pointer to the parent node
 
     Leaf(char e) // Allows for a public access to private data for TreeList class
     {
@@ -28,11 +28,11 @@ class TreeList // Linked List class for the tree
 {
 public:
     TreeList();                                    // Constructor, creates root with null pointer
-    void addChild(Leaf *parent, char elem);        // Add new child with argument to given parent, doesn't move from parent
-    bool checkChild(Leaf *parent, char elem);      // Checks if the parent has a child with given argument returns true if yes, increments
-    Leaf *recursiveMover(Leaf *parent, char elem); // Looks for child of parent that has the same argument and moves there, else returns parent
-    void printTree(Leaf *node, int depth);         // Prints out tree to output with some formatting
-    Leaf *root;                                    // Makes root public
+    void addChild(Leaf* parent, char elem);        // Add new child with argument to given parent, doesn't move from parent
+    bool checkChild(Leaf* parent, char elem);      // Checks if the parent has a child with given argument returns true if yes, increments
+    Leaf* recursiveMover(Leaf* parent, char elem); // Looks for child of parent that has the same argument and moves there, else returns parent
+    void printTree(Leaf* node, int depth);         // Prints out tree to output with some formatting
+    Leaf* root;                                    // Makes root public
 };
 
 TreeList::TreeList()
@@ -40,14 +40,14 @@ TreeList::TreeList()
     root = nullptr;
 }
 
-void TreeList::addChild(Leaf *parent, char elem)
+void TreeList::addChild(Leaf* parent, char elem)
 {
-    Leaf *p = new Leaf(elem); // Create a new leaf with inputted argument
+    Leaf* p = new Leaf(elem); // Create a new leaf with inputted argument
     p->parent = parent;
     parent->children.push_back(p); // push into vector of children
 }
 
-bool TreeList::checkChild(Leaf *parent, char elem)
+bool TreeList::checkChild(Leaf* parent, char elem)
 {
     bool found = false; // Bool to check if child is found
 
@@ -62,9 +62,9 @@ bool TreeList::checkChild(Leaf *parent, char elem)
     return found;
 }
 
-Leaf *TreeList::recursiveMover(Leaf *parent, char elem)
+Leaf* TreeList::recursiveMover(Leaf* parent, char elem)
 {
-    Leaf *result = nullptr; // Dummy leaf to copy location over
+    Leaf* result = nullptr; // Dummy leaf to copy location over
     bool found = false;     // Bool to check if children is found
 
     for (int i = 0; i < parent->children.size(); i++)
@@ -82,7 +82,7 @@ Leaf *TreeList::recursiveMover(Leaf *parent, char elem)
     return result;
 }
 
-void TreeList::printTree(Leaf *node, int depth)
+void TreeList::printTree(Leaf* node, int depth)
 {
     if (node == nullptr)
     {
@@ -92,7 +92,7 @@ void TreeList::printTree(Leaf *node, int depth)
 
     cout << string(depth * 2, ' ') << "Element: " << node->elem << ", Count: " << node->count << endl;
 
-    for (Leaf *child : node->children)
+    for (Leaf* child : node->children)
     {
         printTree(child, depth + 1);
     }
@@ -101,10 +101,15 @@ void TreeList::printTree(Leaf *node, int depth)
 class StringNode
 {
 private:
-    Leaf *leaf;
-    StringNode *next;
+    Leaf* leaf;
+    StringNode* next;
 
     friend class StringLinkedList;
+
+public:
+    Leaf getLeaf() {
+        return *leaf;
+    }
 };
 
 class StringLinkedList
@@ -113,25 +118,25 @@ public:
     StringLinkedList();          // constructor
     StringLinkedList(char e);    // Constructor that accepts a char argument
     ~StringLinkedList();         // destructor
-    void addFront(Leaf *parent); // adds new element on the front
+    void addFront(Leaf* parent); // adds new element on the front
     void removeFront();          // removes front element
-    const string &front() const; // returns front element
+    const StringNode& front() const; // returns front element
     bool empty() const;          // true of list is empty
 private:
-    StringNode *head;
+    StringNode* head;
 };
 
-StringLinkedList ::StringLinkedList()
+StringLinkedList::StringLinkedList()
 {
     head = NULL;
 }
 
-StringLinkedList ::StringLinkedList(char e)
+StringLinkedList::StringLinkedList(char e)
 {
     head = NULL;
 }
 
-bool StringLinkedList ::empty() const
+bool StringLinkedList::empty() const
 {
     return (head == NULL);
 }
@@ -143,9 +148,9 @@ StringLinkedList ::~StringLinkedList()
         removeFront();
 }
 
-void StringLinkedList ::addFront(Leaf *parent)
+void StringLinkedList::addFront(Leaf* parent)
 {
-    StringNode *p;
+    StringNode* p;
 
     p = new StringNode;
     p->leaf = parent;
@@ -154,12 +159,13 @@ void StringLinkedList ::addFront(Leaf *parent)
     head = p;
 }
 
-const string &StringLinkedList ::front() const
+
+const StringNode& StringLinkedList::front() const
 {
 
     if (head != NULL)
     {
-        // return head->leaf;
+        return *head;
     }
     else
     {
@@ -167,9 +173,9 @@ const string &StringLinkedList ::front() const
     }
 }
 
-void StringLinkedList ::removeFront()
+void StringLinkedList::removeFront()
 {
-    StringNode *p;
+    StringNode* p;
 
     if (head != NULL)
     {
@@ -221,7 +227,7 @@ int main()
 
                 bool found = false;
 
-                for (auto &p : args)
+                for (auto& p : args)
                 {
                     if (p.first == arg1)
                     {
@@ -233,7 +239,7 @@ int main()
 
                 if (!found)
                 {
-                    args.push_back({arg1, 1});
+                    args.push_back({ arg1, 1 });
                 }
             }
         }
@@ -256,7 +262,7 @@ int main()
 
     infile.close();
 
-    for (const auto &p : args)
+    for (const auto& p : args)
     {
         cout << "Char: " << p.first << ", Amount: " << p.second << endl;
     }
@@ -324,7 +330,7 @@ int main()
         {
             line += '\n';
 
-            Leaf *current = tree.root;
+            Leaf* current = tree.root;
 
             arg1 = line[0];
             line = line.substr(1);
@@ -379,12 +385,12 @@ int main()
     }
 
     // Initialize a queue for BFS
-    queue<Leaf *> bfsQueue;
+    queue<Leaf*> bfsQueue;
     bfsQueue.push(tree.root);
 
     while (!bfsQueue.empty())
     {
-        Leaf *current = bfsQueue.front();
+        Leaf* current = bfsQueue.front();
         bfsQueue.pop();
 
         for (int i = 0; i < args.size(); i++)
@@ -398,7 +404,7 @@ int main()
         }
 
         // Add all children to the queue
-        for (Leaf *child : current->children)
+        for (Leaf* child : current->children)
         {
             bfsQueue.push(child);
         }
@@ -406,7 +412,13 @@ int main()
 
     for (int i = 0; i < args.size(); i++)
     {
-        // Header[i].front;
+        queue<Leaf*> que;
+        que = bfsQueue;
+        while (!que.empty()) {
+            Leaf* current;
+            current = que.front();
+            if (current->elem == Header[i].front()->leaf->elem)
+        }
     }
 
     // cout << "Breadth-First Search:" << endl;
