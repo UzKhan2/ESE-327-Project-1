@@ -190,6 +190,7 @@ int main()
 {
     TreeList tree;             // Initialize tree
     tree.root = new Leaf('U'); // Set up root value
+    int threshold = 5;
 
     string file = "agaricus-lepiota.data";
     ifstream infile(file);
@@ -376,6 +377,7 @@ int main()
     // tree.printTree(tree.root, 0);
 
     vector<StringLinkedList> Header;
+    vector<vector<char>> fgroups;
 
     // Initialize the Header vector with StringLinkedList objects
     for (int i = 0; i < args.size(); i++)
@@ -430,10 +432,20 @@ int main()
         {
             StringNode *frontNode = currentList.front();
             Leaf *leafPtr = frontNode->leaf;
-
-            cout << "Char: " << leafPtr->elem << ", Count: " << leafPtr->count << endl;
-
-            currentList.removeFront();
+            if (leafPtr->count < threshold)
+            {
+                currentList.removeFront();
+            }
+            else
+            {
+                while (leafPtr->parent != tree.root)
+                {
+                    cout << "Char: " << leafPtr->elem << ", Count: " << leafPtr->count << endl;
+                    leafPtr = leafPtr->parent;
+                }
+                cout << "Group" << endl;
+                currentList.removeFront();
+            }
         }
     }
 
