@@ -456,7 +456,8 @@ def main():
     output = generate_pattern(header_table, min_sup)
     for result in output:
         for element in result:
-            print("Frequent Pattern: ", element.path, "     Count: ", element.get_count())
+            if element.get_count() > min_sup:
+                print("Frequent Pattern: ", element.path, "     Count: ", element.get_count())
 
 
 if __name__ == "__main__":
