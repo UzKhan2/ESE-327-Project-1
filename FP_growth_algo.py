@@ -1,3 +1,14 @@
+
+import time
+import tracemalloc
+
+
+def app():
+    It = []
+    for i in range(0, 100000):
+        It.append(i)
+
+
 def convert(string):
     li = list(string.split(" "))
     return li
@@ -445,8 +456,14 @@ def main():
     header_table = dict()
     f_name = input("Please enter a file name to scan:  ")
     min_sup = input("Please enter the minimum support: ")
+    tracemalloc.start()
+
+    app()
+
+    start_time = time.time()
     output_f = "output.txt"
     output_file = open("output.txt", 'w')
+
     dataset = read_dataset(f_name)
     fq_pattern = get_fq_pattern(dataset)
     fq_pattern = filter_min(fq_pattern, min_sup)
@@ -458,6 +475,12 @@ def main():
         for element in result:
             if int(element.get_count()) > int(min_sup):
                 print("Frequent Pattern: ", element.path, "     Count: ", element.get_count())
+
+    end_time = time.time()
+
+    print("Time taken: ", end_time - start_time, "seconds")
+    print("Memory: ", tracemalloc.get_traced_memory())
+    tracemalloc.stop()
 
 
 if __name__ == "__main__":
