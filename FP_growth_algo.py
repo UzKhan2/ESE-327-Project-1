@@ -419,15 +419,16 @@ def find_combination(path_list, key, cnd_table):
     return result
 
 
-def generate_pattern(header_table, min):
+def generate_pattern(header_table, min_sup):
     key_list = header_table.keys()
     new_dataset = []
+    output = []
     for key in key_list:
        # print("Current Prefix: ", key)
         pointers = header_table[key]
         data_path = extract_path(pointers)
         cnd_table = cnd_fp_table(data_path)
-        cnd_table = filter_min(cnd_table, min)
+        cnd_table = filter_min(cnd_table, min_sup)
         for li in data_path:
             pattern_base = li.pattern
             new_dataset.append(pattern_base)
@@ -436,8 +437,8 @@ def generate_pattern(header_table, min):
     #    print("Paths: ", paths)
         fq_pattern_list = generate_list(paths)
         result = find_combination(fq_pattern_list, key, cnd_table)
-        for element in result:
-            print("Frequent Pattern: ", element.path, "     Count: ", element.get_count())
+        output.append(result)
+    return output
 
 
 def main():
@@ -452,11 +453,10 @@ def main():
     print("Frequency Pattern: ", fq_pattern)
     tree = construct_tree(dataset, fq_pattern)
     header_table = getHeader(tree, fq_pattern)
-    result = generate_pattern(header_table, min_sup)
-    #for i, element in enumerate(result):
-    #     print("Path: ", element.pattern, "  Count: ", element.get_count())
-    #     output_file.writelines(element.pattern)
-    #output_file.close()
+    output = generate_pattern(header_table, min_sup)
+    for result in output:
+        for element in result:
+            print("Frequent Pattern: ", element.path, "     Count: ", element.get_count())
 
 
 if __name__ == "__main__":
