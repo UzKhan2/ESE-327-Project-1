@@ -1,18 +1,14 @@
-
 import time
 import tracemalloc
-
 
 def app():
     It = []
     for i in range(0, 100000):
         It.append(i)
 
-
 def convert(string):
     li = list(string.split(" "))
     return li
-
 
 class ConditionPattern:
     pattern = []
@@ -104,7 +100,6 @@ class Node(object):
             print("Data: ", self.parent[0].get_data(), "   [Count=", self.parent[0].get_count(), "]")
         else:
             print("No parent node")
-
 
 class Header:
     pointer = ""
